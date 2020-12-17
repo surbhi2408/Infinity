@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_network_app/widgets/header_widget.dart';
 
 class NotificationsPage extends StatefulWidget {
   @override
@@ -8,7 +9,9 @@ class NotificationsPage extends StatefulWidget {
 class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: header(context, strTitle: "Notifications",),
+    );
   }
 }
 

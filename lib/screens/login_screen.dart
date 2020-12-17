@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   onTapChangePage(int pageIndex){
-    pageController.animateToPage(pageIndex, duration: Duration(milliseconds: 150), curve: Curves.bounceInOut);
+    pageController.animateToPage(pageIndex, duration: Duration(milliseconds: 200), curve: Curves.bounceInOut);
   }
 
   Scaffold buildHomeScreen(){
