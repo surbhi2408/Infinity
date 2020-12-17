@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         'Welcome In SplashScreen',
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
       ),
-      seconds: 8,
+      seconds: 6,
       navigateAfterSeconds: LoginScreen(),
       image: new Image.asset('assets/images/loading.gif'),
       backgroundColor: Colors.black,
