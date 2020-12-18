@@ -1,14 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/Notifications_page.dart';
 import 'package:social_network_app/screens/Upload_page.dart';
+import 'package:social_network_app/screens/create_account_page.dart';
 import 'package:social_network_app/screens/profile_page.dart';
 import 'package:social_network_app/screens/search_screen.dart';
 import 'package:social_network_app/screens/time_line_screen.dart';
 
 final GoogleSignIn gSignIn = GoogleSignIn();
+final usersReference = Firestore.instance.collection("users");
+
+final DateTime timestamp = DateTime.now();
+User currentUser;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -42,6 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   controlSignIn(GoogleSignInAccount signInAccount) async{
     if(signInAccount != null){
+
+      await saveUserInfoToFireStore();
+
       setState(() {
         isSignedIn = true;
       });
@@ -51,6 +61,28 @@ class _LoginScreenState extends State<LoginScreen> {
         isSignedIn = false;
       });
     }
+  }
+
+  saveUserInfoToFireStore() async{
+    final GoogleSignInAccount gCurrentUser = gSignIn.currentUser;
+    DocumentSnapshot documentSnapshot = await usersReference.document(gCurrentUser.id).get();
+
+    if(!documentSnapshot.exists){
+      final username = await Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+
+      usersReference.document(gCurrentUser.id).setData({
+        "id": gCurrentUser.id,
+        "profileName": gCurrentUser.displayName,
+        "username": username,
+        "url": gCurrentUser.photoUrl,
+        "email": gCurrentUser.email,
+        "bio": "",
+        "timestamp": timestamp,
+      });
+      documentSnapshot = await usersReference.document(gCurrentUser.id).get();
+    }
+
+    currentUser = User.fromDocument(documentSnapshot);
   }
 
   void dispose(){
