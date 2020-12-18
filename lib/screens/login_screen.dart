@@ -112,7 +112,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          TimeLinePage(),
+          //TimeLinePage(),
+          RaisedButton.icon(
+            onPressed: logoutUser,
+            icon: Icon(Icons.exit_to_app),
+            label: Text("Sign Out"),
+          ),
           SearchScreen(),
           UploadPage(),
           NotificationsPage(),
@@ -138,11 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-    // return RaisedButton.icon(
-    //   onPressed: logoutUser,
-    //   icon: Icon(Icons.exit_to_app),
-    //   label: Text("Sign Out"),
-    // );
   }
 
   Scaffold buildSignInScreen(){
