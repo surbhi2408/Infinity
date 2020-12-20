@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
             label: Text("Sign Out"),
           ),
           SearchScreen(),
-          UploadPage(),
+          UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
           ProfilePage(),
         ],
