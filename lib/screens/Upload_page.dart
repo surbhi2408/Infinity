@@ -1,10 +1,16 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:social_network_app/models/user.dart';
+import 'package:social_network_app/screens/login_screen.dart';
+import 'package:social_network_app/widgets/progress_widget.dart';
+import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as ImD;
 
 class UploadPage extends StatefulWidget {
 
@@ -16,9 +22,12 @@ class UploadPage extends StatefulWidget {
   _UploadPageState createState() => _UploadPageState();
 }
 
-class _UploadPageState extends State<UploadPage> {
+class _UploadPageState extends State<UploadPage> with AutomaticKeepAliveClientMixin<UploadPage>{
 
   File file;
+  bool uploading = false;
+  String postId = Uuid().v4();
+
   TextEditingController descriptionTextEditingController = TextEditingController();
   TextEditingController locationTextEditingController = TextEditingController();
 
@@ -102,7 +111,7 @@ class _UploadPageState extends State<UploadPage> {
   // function where user can select image to upload
   displayUploadScreen(){
     return Container(
-      color: Theme.of(context).accentColor.withOpacity(0.5),
+      color: Colors.white24,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -138,7 +147,11 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   // when the back button is clicked image that is selected is removed
-  removeImage(){
+  clearPostInfo(){
+
+    locationTextEditingController.clear();
+    descriptionTextEditingController.clear();
+
     setState(() {
       file = null;
     });
@@ -154,15 +167,68 @@ class _UploadPageState extends State<UploadPage> {
     locationTextEditingController.text = specificAddress;
   }
 
+  compressingPhoto() async{
+    final tDirectory = await getTemporaryDirectory();
+    final path = tDirectory.path;
+    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$postId.jpg')..writeAsBytesSync(ImD.encodeJpg(mImageFile, quality: 90));
+    setState(() {
+      file = compressedImageFile;
+    });
+  }
+
+  // when post button is clicked then the image is uploaded to fireStore
+  controlUploadAndSave() async{
+    setState(() {
+      uploading = true;
+    });
+
+    await compressingPhoto();
+
+    String downloadUrl = await uploadPhoto(file);
+
+    savePostInfoToFireStore(url: downloadUrl, location: locationTextEditingController.text, description: descriptionTextEditingController.text);
+
+    locationTextEditingController.clear();
+    descriptionTextEditingController.clear();
+
+    setState(() {
+      file = null;
+      uploading = false;
+      postId = Uuid().v4();
+    });
+  }
+
+  savePostInfoToFireStore({String url, String location, String description}){
+    postsReference.document(widget.gCurrentUser.id).collection("usersPosts").document(postId).setData({
+      "postId": postId,
+      "ownerId": widget.gCurrentUser.id,
+      "timestamp": timestamp,
+      "likes": {},
+      "username": widget.gCurrentUser.username,
+      "description": description,
+      "location": location,
+      "url": url,
+    });
+  }
+
+  Future<String> uploadPhoto(mImageFile) async{
+    StorageUploadTask mStorageUploadTask = storageReference.child("post_$postId.jpg").putFile(mImageFile);
+    StorageTaskSnapshot storageTaskSnapshot = await mStorageUploadTask.onComplete;
+    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
   displayUploadFormScreen(){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: Colors.white,
           ),
-          onPressed: removeImage,
+          onPressed: clearPostInfo,
         ),
         title: Text(
           "New Post",
@@ -170,17 +236,18 @@ class _UploadPageState extends State<UploadPage> {
             fontSize: 24.0,
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontFamily: "Signatra",
           ),
         ),
         actions: <Widget>[
           FlatButton(
-            onPressed: () => print("tapped"),
+            onPressed: uploading ? null : () => controlUploadAndSave(),
             child: Text(
-                "Share",
+                "Post",
               style: TextStyle(
                 color: Colors.lightGreenAccent,
                 fontWeight: FontWeight.bold,
-                fontSize: 16.0,
+                fontSize: 17.0,
               ),
             ),
           ),
@@ -188,6 +255,7 @@ class _UploadPageState extends State<UploadPage> {
       ),
       body: ListView(
         children: <Widget>[
+          uploading ? linearProgress() : Text(""),
           Container(
             height: 230.0,
             width: MediaQuery.of(context).size.width * 0.8,
@@ -226,7 +294,7 @@ class _UploadPageState extends State<UploadPage> {
                 decoration: InputDecoration(
                   hintText: "Say something about image.",
                   hintStyle: TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                   ),
                   border: InputBorder.none,
                 ),
@@ -251,7 +319,7 @@ class _UploadPageState extends State<UploadPage> {
                 decoration: InputDecoration(
                   hintText: "Write the location here..",
                   hintStyle: TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                   ),
                   border: InputBorder.none,
                 ),
@@ -284,6 +352,8 @@ class _UploadPageState extends State<UploadPage> {
       ),
     );
   }
+
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {

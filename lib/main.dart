@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:social_network_app/screens/login_screen.dart';
 import 'package:splashscreen/splashscreen.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.white60);
     return new SplashScreen(
       title: new Text(
         'Welcome In SplashScreen',
