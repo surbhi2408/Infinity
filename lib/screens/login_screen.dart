@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SearchScreen(),
           UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
-          ProfilePage(),
+          ProfilePage(userProfileId: currentUser.id),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         index: getPageIndex,
         onTap: onTapChangePage,
-        color: Colors.black,
+        color: Colors.black45,
         backgroundColor: Colors.grey,
         buttonBackgroundColor: Colors.black,
         height: 55,

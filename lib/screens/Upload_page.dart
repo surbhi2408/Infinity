@@ -100,7 +100,7 @@ class _UploadPageState extends State<UploadPage> with AutomaticKeepAliveClientMi
                   color: Colors.white,
                 ),
               ),
-              onPressed: () => Navigator.of(context),
+              onPressed: () => Navigator.pop(context),
             ),
           ],
         );
