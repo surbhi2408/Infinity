@@ -97,9 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
     gSignIn.signIn();
   }
 
-  logoutUser(){
-    gSignIn.signOut();
-  }
+  // logoutUser(){
+  //   gSignIn.signOut();
+  // }
 
   whenPageChanges(int pageIndex){
     setState(() {
@@ -115,12 +115,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          //TimeLinePage(),
-          RaisedButton.icon(
-            onPressed: logoutUser,
-            icon: Icon(Icons.exit_to_app),
-            label: Text("Sign Out"),
-          ),
+          TimeLinePage(),
+          // RaisedButton.icon(
+          //   onPressed: logoutUser,
+          //   icon: Icon(Icons.exit_to_app),
+          //   label: Text("Sign Out"),
+          // ),
           SearchScreen(),
           UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
