@@ -91,7 +91,7 @@ class SearchScreen extends StatefulWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
-                fontSize: 45.0,
+                fontSize: 30.0,
               ),
             ),
           ],

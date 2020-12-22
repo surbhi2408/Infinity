@@ -157,7 +157,8 @@ class _PostState extends State<Post> {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          cachedNetworkImage(url),
+          //cachedNetworkImage(url),
+          Image.network(url),
         ],
       ),
     );
@@ -176,9 +177,11 @@ class _PostState extends State<Post> {
             GestureDetector(
               onTap: () => print("liked post"),
               child: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 28.0,
-                color: Colors.red,
+                Icons.favorite,
+                color: Colors.white,
+                // isLiked ? Icons.favorite : Icons.favorite_border,
+                // size: 28.0,
+                // color: Colors.red,
               ),
             ),
             Padding(
