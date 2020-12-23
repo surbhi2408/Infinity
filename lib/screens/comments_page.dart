@@ -182,7 +182,7 @@ class Comment extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(height: 1.0,),
+            Divider(height: 2.0,),
           ],
         ),
       ),
