@@ -85,6 +85,7 @@ class SearchScreen extends StatefulWidget {
             //   color: Colors.grey,
             //   size: 200.0,
             // ),
+            SizedBox(height: 10.0,),
             Text(
               "Search Users",
               textAlign: TextAlign.center,

@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:social_network_app/models/user.dart';
+import 'package:social_network_app/screens/comments_page.dart';
 import 'package:social_network_app/screens/login_screen.dart';
-import 'package:social_network_app/widgets/image_widget.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
 
 class Post extends StatefulWidget {
@@ -92,6 +94,9 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+
+    isLiked = (likes[currentOnlineUserId] == true);
+
     return Padding(
       padding: EdgeInsets.only(bottom: 12.0),
       child: Column(
@@ -150,15 +155,83 @@ class _PostState extends State<Post> {
     );
   }
 
+  removeLike(){
+    bool isNotPostOwner = currentOnlineUserId != ownerId;
+
+    if(isNotPostOwner){
+      activityFeedReference.document(ownerId).collection("feedItems").document(postId).get().then((document){
+        if(document.exists){
+          document.reference.delete();
+        }
+      });
+    }
+  }
+
+  addLike(){
+    bool isNotPostOwner = currentOnlineUserId != ownerId;
+    if(isNotPostOwner){
+      activityFeedReference.document(ownerId).collection("feedItems").document(postId).setData({
+        "type": "like",
+        "username": currentUser.username,
+        "userId": currentUser.id,
+        "timestamp": timestamp,
+        "url": url,
+        "postId": postId,
+        "userProfileImg": currentUser.url,
+      });
+    }
+  }
+
+  // function to control likes and dislikes of a post
+  controlUserLikedPost(){
+    bool _liked = likes[currentOnlineUserId] == true;
+    if(_liked){
+      postsReference.document(ownerId).collection("usersPosts").document(postId).updateData({
+        "likes.$currentOnlineUserId": false,
+      });
+      removeLike();
+      setState(() {
+        likeCount = likeCount - 1;
+        isLiked = false;
+        likes[currentOnlineUserId] = false;
+      });
+    }
+    else if(!_liked){
+      postsReference.document(ownerId).collection("usersPosts").document(postId).updateData({
+        "likes.$currentOnlineUserId": true,
+      });
+      addLike();
+
+      setState(() {
+        likeCount = likeCount + 1;
+        isLiked = true;
+        likes[currentOnlineUserId] = true;
+        showHeart = true;
+      });
+      Timer(Duration(milliseconds: 800), (){
+        setState(() {
+          showHeart = false;
+        });
+      });
+    }
+  }
+
   // creating post picture field just after head of the post
   createPostPicture(){
     return GestureDetector(
-      onDoubleTap: () => print("post liked"),
+      onDoubleTap: () => controlUserLikedPost,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
           //cachedNetworkImage(url),
           Image.network(url),
+          showHeart
+              ? Icon(
+              Icons.favorite,
+            size: 120.0,
+            color: Colors.red,
+          )
+              : Text(""),
         ],
       ),
     );
@@ -175,20 +248,18 @@ class _PostState extends State<Post> {
               padding: EdgeInsets.only(top: 40.0, left: 20.0),
             ),
             GestureDetector(
-              onTap: () => print("liked post"),
+              onTap: () => controlUserLikedPost(),
               child: Icon(
-                Icons.favorite,
-                color: Colors.white,
-                // isLiked ? Icons.favorite : Icons.favorite_border,
-                // size: 28.0,
-                // color: Colors.red,
+                isLiked ? Icons.favorite : Icons.favorite_border,
+                size: 28.0,
+                color: Colors.red,
               ),
             ),
             Padding(
               padding: EdgeInsets.only(right: 20.0),
             ),
             GestureDetector(
-              onTap: () => print("show comments"),
+              onTap: () => displayComments(context, postId: postId, ownerId: ownerId, url: url),
               child: Icon(
                 Icons.chat_bubble_outline,
                 size: 28.0,
@@ -251,5 +322,13 @@ class _PostState extends State<Post> {
         ),
       ],
     );
+  }
+
+  displayComments(BuildContext context, {String postId, String ownerId, String url}){
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context){
+        return CommentsPage(postId: postId, postOwnerId: ownerId, postImageUrl: url,);
+      }
+    ));
   }
 }
