@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/login_screen.dart';
+import 'package:social_network_app/screens/profile_page.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -149,7 +150,7 @@ class UserResult extends StatelessWidget {
         child: Column(
           children: <Widget>[
             GestureDetector(
-              onTap: () => print("tapped"),
+              onTap: () => displayUserProfile(context, userProfileId: eachUser.id),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.black,
@@ -178,5 +179,11 @@ class UserResult extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  displayUserProfile(BuildContext context, {String userProfileId}){
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => ProfilePage(userProfileId: userProfileId,),
+    ));
   }
 }

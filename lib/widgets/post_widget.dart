@@ -228,8 +228,8 @@ class _PostState extends State<Post> {
           showHeart
               ? Icon(
               Icons.favorite,
-            size: 120.0,
-            color: Colors.red,
+            size: 100.0,
+            color: Colors.white,
           )
               : Text(""),
         ],
