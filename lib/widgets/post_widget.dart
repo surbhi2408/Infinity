@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/comments_page.dart';
 import 'package:social_network_app/screens/login_screen.dart';
+import 'package:social_network_app/screens/profile_page.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
 
 class Post extends StatefulWidget {
@@ -128,7 +129,7 @@ class _PostState extends State<Post> {
             backgroundColor: Colors.grey,
           ),
           title: GestureDetector(
-            onTap: () => print("show profile"),
+            onTap: () => displayUserProfile(context, userProfileId: user.id),
             child: Text(
               user.username,
               style: TextStyle(
@@ -155,6 +156,12 @@ class _PostState extends State<Post> {
     );
   }
 
+  displayUserProfile(BuildContext context, {String userProfileId}){
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => ProfilePage(userProfileId: userProfileId,),
+    ));
+  }
+
   removeLike(){
     bool isNotPostOwner = currentOnlineUserId != ownerId;
 
@@ -174,7 +181,7 @@ class _PostState extends State<Post> {
         "type": "like",
         "username": currentUser.username,
         "userId": currentUser.id,
-        "timestamp": timestamp,
+        "timestamp": DateTime.now(),
         "url": url,
         "postId": postId,
         "userProfileImg": currentUser.url,

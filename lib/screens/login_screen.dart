@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,6 +21,7 @@ final activityFeedReference = Firestore.instance.collection("feed");
 final commentsReference = Firestore.instance.collection("comments");
 final followersReference = Firestore.instance.collection("followers");
 final followingReference = Firestore.instance.collection("following");
+final timelineReference = Firestore.instance.collection("timeline");
 
 final DateTime timestamp = DateTime.now();
 User currentUser;
@@ -34,6 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isSignedIn = false;
   PageController pageController;
   int getPageIndex = 0;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // function for checking whether user is logged in or not
   void initState(){
@@ -62,6 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isSignedIn = true;
       });
+
+      //configureRealTimePushNotifications();
     }
     else{
       setState(() {
@@ -69,6 +75,48 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
+
+  // configureRealTimePushNotifications(){
+  //   final GoogleSignInAccount gUser = gSignIn.currentUser;
+  //   if(Platform.isIOS){
+  //     getIOSPermissions();
+  //   }
+  //
+  //   _firebaseMessaging.getToken().then((token){
+  //     usersReference.document(gUser.id).updateData({
+  //       "androidNotificationToken": token,
+  //     });
+  //   });
+  //
+  //   _firebaseMessaging.configure(
+  //     onMessage: (Map<String, dynamic> msg) async{
+  //       final String recipientId = msg["data"]["recipient"];
+  //       final String body = msg["notification"]["body"];
+  //
+  //       if(recipientId == gUser.id){
+  //         SnackBar snackBar = SnackBar(
+  //           backgroundColor: Colors.grey,
+  //           content: Text(
+  //             body,
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //             ),
+  //             overflow: TextOverflow.ellipsis,
+  //           ),
+  //         );
+  //         _scaffoldKey.currentState.showSnackBar(snackBar);
+  //       }
+  //     },
+  //   );
+  // }
+  //
+  // getIOSPermissions(){
+  //   _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(alert: true, badge: true, sound: true));
+  //
+  //   _firebaseMessaging.onIosSettingsRegistered.listen((settings) {
+  //     print("Settings Registered: $settings");
+  //   });
+  // }
 
   saveUserInfoToFireStore() async{
     final GoogleSignInAccount gCurrentUser = gSignIn.currentUser;
@@ -86,6 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
         "bio": "",
         "timestamp": timestamp,
       });
+
+      await followersReference.document(gCurrentUser.id).collection("userFollowers").document(gCurrentUser.id).setData({});
+
       documentSnapshot = await usersReference.document(gCurrentUser.id).get();
     }
 
@@ -117,9 +168,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Scaffold buildHomeScreen(){
     return Scaffold(
+      key: _scaffoldKey,
       body: PageView(
         children: <Widget>[
-          TimeLinePage(),
+          TimeLinePage(gCurrentUser: currentUser,),
           // RaisedButton.icon(
           //   onPressed: logoutUser,
           //   icon: Icon(Icons.exit_to_app),
@@ -128,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SearchScreen(),
           UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
-          ProfilePage(userProfileId: currentUser.id),
+          ProfilePage(userProfileId: currentUser?.id),
         ],
         controller: pageController,
         onPageChanged: whenPageChanges,

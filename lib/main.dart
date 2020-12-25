@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:social_network_app/screens/login_screen.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  //
+  // Firestore.instance.settings();
+
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
