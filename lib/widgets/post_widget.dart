@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/comments_page.dart';
 import 'package:social_network_app/screens/login_screen.dart';
@@ -149,11 +150,132 @@ class _PostState extends State<Post> {
               Icons.more_vert,
               color: Colors.white,
             ),
-            onPressed: () => print("deleted"),
+            onPressed: () => showingBottomSheet(),
           ) : Text(""),
         );
       },
     );
+  }
+
+  // opening bottom modal sheet to perform various options
+  showingBottomSheet(){
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black45,
+      builder: (context){
+        return Column(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(
+                  Icons.delete,
+                color: Colors.white,
+              ),
+              title: Text(
+                  "Delete Post",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onTap: () => controlPostDelete(context),
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  // controlling post delete option
+  controlPostDelete(BuildContext mContext){
+    Navigator.pop(context);
+    return showDialog(
+      context: mContext,
+      builder: (context){
+        return AssetGiffyDialog(
+          buttonCancelColor: Colors.black45,
+          image: Image.asset("assets/images/delete.gif"),
+          title: Text(
+            "Delete this Post",
+            style: TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          description: Text(
+            "Do you want to delete this post? Warning: This post will be permanently deleted from your profile.",
+            textAlign: TextAlign.center,
+          ),
+          entryAnimation: EntryAnimation.DEFAULT,
+          onOkButtonPressed: (){
+            Navigator.pop(context);
+            removeUserPost();
+          },
+        );
+        // return SimpleDialog(
+        //   title: Text(
+        //     "What do you want?",
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   children: <Widget>[
+        //     SimpleDialogOption(
+        //       child: Text(
+        //         "Delete",
+        //         style: TextStyle(
+        //           color: Colors.white,
+        //           fontWeight: FontWeight.bold,
+        //         ),
+        //       ),
+        //       onPressed: (){
+        //         Navigator.pop(context);
+        //         removeUserPost(),
+        //       },
+        //     ),
+        //     SimpleDialogOption(
+        //       child: Text(
+        //         "Cancel",
+        //         style: TextStyle(
+        //           color: Colors.white,
+        //           fontWeight: FontWeight.bold,
+        //         ),
+        //       ),
+        //       onPressed: () => Navigator.pop(context),
+        //     ),
+        //   ],
+        // );
+      }
+    );
+  }
+
+  // removing post permanently from the firebase storage
+  removeUserPost() async{
+    postsReference.document(ownerId).collection("usersPosts").document(postId).get().then((document){
+      if(document.exists){
+        document.reference.delete();
+      }
+    });
+
+    storageReference.child("post_$postId.jpg").delete();
+
+    QuerySnapshot querySnapshot = await activityFeedReference
+        .document(ownerId)
+        .collection("feedItems")
+        .where("postId", isEqualTo: postId)
+        .getDocuments();
+
+    querySnapshot.documents.forEach((document) {
+      if(document.exists){
+        document.reference.delete();
+      }
+    });
+
+    QuerySnapshot commentsQuerySnapshot = await commentsReference.document(postId).collection("comments").getDocuments();
+
+    commentsQuerySnapshot.documents.forEach((document) {
+      if(document.exists){
+        document.reference.delete();
+      }
+    });
   }
 
   displayUserProfile(BuildContext context, {String userProfileId}){

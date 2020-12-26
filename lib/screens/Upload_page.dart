@@ -212,6 +212,7 @@ class _UploadPageState extends State<UploadPage> with AutomaticKeepAliveClientMi
     });
   }
 
+  // uploading image to firebase storage
   Future<String> uploadPhoto(mImageFile) async{
     StorageUploadTask mStorageUploadTask = storageReference.child("post_$postId.jpg").putFile(mImageFile);
     StorageTaskSnapshot storageTaskSnapshot = await mStorageUploadTask.onComplete;

@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/Notifications_page.dart';
 import 'package:social_network_app/screens/Upload_page.dart';
+import 'package:social_network_app/screens/chat_search_screen.dart';
 import 'package:social_network_app/screens/create_account_page.dart';
 import 'package:social_network_app/screens/profile_page.dart';
 import 'package:social_network_app/screens/search_screen.dart';
@@ -180,6 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SearchScreen(),
           UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
+          ChatSearchScreen(),
           ProfilePage(userProfileId: currentUser?.id),
         ],
         controller: pageController,
@@ -196,8 +198,9 @@ class _LoginScreenState extends State<LoginScreen> {
         items: <Widget>[
           Icon(Icons.home, size: 20, color: Colors.white,),
           Icon(Icons.search, size: 20, color: Colors.white,),
-          Icon(Icons.photo_camera, size: 37, color: Colors.white,),
+          Icon(Icons.photo_camera, size: 20, color: Colors.white,),
           Icon(Icons.favorite, size: 20, color: Colors.white,),
+          Icon(Icons.offline_bolt, size: 20, color: Colors.white,),
           Icon(Icons.person, size: 20, color: Colors.white,),
         ],
       ),
