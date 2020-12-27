@@ -10,8 +10,8 @@ AppBar header(context, {bool isAppTitle=false, String strTitle, disappearBackBut
       isAppTitle ? "SocioApp" : strTitle,
       style: TextStyle(
         color: Colors.white,
-        fontFamily: isAppTitle ? "Signatra" : "",
-        fontSize: isAppTitle ? 45.0 : 22.0,
+        fontFamily: "Signatra",
+        fontSize: isAppTitle ? 45.0 : 38.0,
       ),
       overflow: TextOverflow.ellipsis,
     ),

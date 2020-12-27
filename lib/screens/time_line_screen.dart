@@ -6,8 +6,6 @@ import 'package:social_network_app/widgets/post_widget.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
 import 'package:social_network_app/models/user.dart';
 
-final usersReference = Firestore.instance.collection('users');
-
 class TimeLinePage extends StatefulWidget {
 
   final User gCurrentUser;

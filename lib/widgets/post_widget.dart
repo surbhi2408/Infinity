@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/comments_page.dart';
@@ -178,6 +179,38 @@ class _PostState extends State<Post> {
               ),
               onTap: () => controlPostDelete(context),
             ),
+
+            ListTile(
+              leading: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              title: Text(
+                "Share Post",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onTap: (){
+                Navigator.pop(context);
+                controlSharePosts();
+              }
+            ),
+
+            ListTile(
+              leading: Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              title: Text(
+                "Edit Post",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onTap: () => print("edit clicked"),
+              //onTap: () => controlPostEdit(context),
+            ),
           ],
         );
       }
@@ -192,6 +225,7 @@ class _PostState extends State<Post> {
       builder: (context){
         return AssetGiffyDialog(
           buttonCancelColor: Colors.black45,
+          buttonOkColor: Colors.redAccent,
           image: Image.asset("assets/images/delete.gif"),
           title: Text(
             "Delete this Post",
@@ -399,7 +433,7 @@ class _PostState extends State<Post> {
               padding: EdgeInsets.only(right: 20.0),
             ),
             GestureDetector(
-              onTap: () => print("share"),
+              onTap: () => controlSharePosts(),
               child: Icon(
                 Icons.share,
                 size: 28.0,
@@ -450,6 +484,17 @@ class _PostState extends State<Post> {
           ],
         ),
       ],
+    );
+  }
+
+  // sharing posts to other social media
+  controlSharePosts(){
+    //final RenderBox box = context.findRenderObject();
+    FlutterShare.share(
+      title: 'SocioApp',
+      text: description,
+      linkUrl: url,
+      chooserTitle: 'Where you want to Share',
     );
   }
 

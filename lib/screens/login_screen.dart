@@ -134,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "email": gCurrentUser.email,
         "bio": "",
         "timestamp": timestamp,
+        "chattingWith": null,
       });
 
       await followersReference.document(gCurrentUser.id).collection("userFollowers").document(gCurrentUser.id).setData({});
@@ -181,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SearchScreen(),
           UploadPage(gCurrentUser: currentUser,),
           NotificationsPage(),
-          ChatSearchScreen(),
+          ChatSearchScreen(gCurrentUser: currentUser?.id,),
           ProfilePage(userProfileId: currentUser?.id),
         ],
         controller: pageController,
