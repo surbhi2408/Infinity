@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_network_app/screens/login_screen.dart';
 import 'package:social_network_app/widgets/full_image_widget.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';

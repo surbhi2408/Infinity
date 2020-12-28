@@ -116,7 +116,7 @@ class _UploadPageState extends State<UploadPage> with AutomaticKeepAliveClientMi
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Image.asset(
-            "assets/images/upload_image.png",
+            "assets/images/uploading_image.png",
             height: MediaQuery.of(context).size.height * 0.3,
           ),
           // Icon(

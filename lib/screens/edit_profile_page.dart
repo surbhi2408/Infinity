@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/login_screen.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
@@ -8,14 +12,18 @@ import 'package:social_network_app/widgets/progress_widget.dart';
 class EditProfilePage extends StatefulWidget {
 
   final String currentOnlineUserId;
+  String fileName;
 
   EditProfilePage({this.currentOnlineUserId});
 
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _EditProfilePageState createState() => _EditProfilePageState(fileName: fileName);
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+
+  String fileName;
+  _EditProfilePageState({this.fileName});
 
   TextEditingController profileNameTextEditingController = TextEditingController();
   TextEditingController bioTextEditingController = TextEditingController();
@@ -24,6 +32,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   User user;
   bool _profileNameValid = true;
   bool _bioValid = true;
+
+  File _imageFile;
 
   void initState(){
     super.initState();
@@ -69,6 +79,80 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  Future _getImage(BuildContext context, ImageSource source) async{
+    ImagePicker.pickImage(source: source, maxWidth: 400.0).then((File image){
+      setState(() {
+        _imageFile = image;
+      });
+      Navigator.pop(context);
+    });
+  }
+
+  // uploading pic to fireStore and fetching the same pic to app
+  Future uploadPic(BuildContext context) async{
+    String mFileName = user.id;
+    StorageReference firebaseStorageReference = FirebaseStorage.instance.ref().child(mFileName);
+    StorageUploadTask uploadTask = firebaseStorageReference.putFile(_imageFile);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    taskSnapshot.ref.getDownloadURL().then((newImageDownloadUrl){
+      usersReference.document(user.id).updateData({
+        "url": newImageDownloadUrl,
+      });
+    });
+
+    // when pic is uploaded successfully to fireStore a message is displayed
+    setState(() {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Profile Picture Uploaded Successfully.")));
+    });
+  }
+
+  // showing bottom modal sheet and uploading profile picture by various methods
+  void _openImagePicker(BuildContext context){
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context){
+          return Container(
+            height: 150.0,
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  "Pick an Image",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10.0,),
+                FlatButton(
+                  child: Text(
+                    "Use Camera",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  onPressed: (){
+                    _getImage(context, ImageSource.camera);
+                  },
+                ),
+                SizedBox(height: 5.0,),
+                FlatButton(
+                  child: Text(
+                    "Use Gallery",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  onPressed: (){
+                    _getImage(context, ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +171,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(
-                Icons.done,
+              Icons.done,
               color: Colors.white,
               size: 30.0,
             ),
@@ -100,13 +184,68 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Container(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 7.0),
+
+                // Profile photo
+                Align(
+                  alignment: Alignment.topCenter,
                   child: CircleAvatar(
-                    radius: 52.0,
-                    backgroundImage: CachedNetworkImageProvider(user.url),
+                    radius: 45.0,
+                    backgroundColor: Colors.black,
+                    child: ClipOval(
+                      child: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: (_imageFile == null)
+                            ? Image.network(
+                          user.url,
+                          fit: BoxFit.fill,
+                        )
+                            : Image.file(
+                          _imageFile,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+
+                // icon button to pick image from camera or gallery
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: FlatButton.icon(
+                    onPressed: (){
+                      _openImagePicker(context);
+                    },
+                    icon: Icon(Icons.add_a_photo, color: Colors.white,),
+                    label: Text(""),
+                  ),
+                ),
+
+                // after clicking to add photo in app image gets uploaded to fireStore
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: FlatButton(
+                    child: Text(
+                      "Add Photo",
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    onPressed: (){
+                      uploadPic(context);
+                    },
+                  ),
+                ),
+
+                SizedBox(height: 10.0,),
+
+                // Padding(
+                //   padding: EdgeInsets.only(top: 15.0, bottom: 7.0),
+                //   child: CircleAvatar(
+                //     radius: 52.0,
+                //     backgroundImage: CachedNetworkImageProvider(user.url),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
@@ -152,8 +291,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   logoutUser() async{
-      await gSignIn.signOut();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    await gSignIn.signOut();
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   Column createProfileNameTextFormField(){

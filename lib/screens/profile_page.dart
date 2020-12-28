@@ -339,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 size: 200.0,
               ),
             ),
-            SizedBox(height: 10.0,),
+            SizedBox(height: 4.0,),
             Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Text(
