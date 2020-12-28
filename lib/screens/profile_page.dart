@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/edit_profile_page.dart';
 import 'package:social_network_app/screens/login_screen.dart';
@@ -327,19 +326,19 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SvgPicture.asset(
-                "assets/images/no_content.svg",
-              height: MediaQuery.of(context).size.height * 0.2,
-            ),
-
-            // Padding(
-            //   padding: EdgeInsets.all(30.0),
-            //   child: Icon(
-            //     Icons.photo_library,
-            //     color: Colors.grey,
-            //     size: 200.0,
-            //   ),
+            // Image.asset(
+            //     "assets/images/no_content.svg",
+            //   height: MediaQuery.of(context).size.height * 0.2,
             // ),
+
+            Padding(
+              padding: EdgeInsets.all(30.0),
+              child: Icon(
+                Icons.photo_library,
+                color: Colors.grey,
+                size: 200.0,
+              ),
+            ),
             SizedBox(height: 10.0,),
             Padding(
               padding: EdgeInsets.only(top: 20.0),

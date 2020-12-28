@@ -3,7 +3,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/Notifications_page.dart';
@@ -232,8 +231,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
-            SvgPicture.asset(
-                "assets/images/login.svg",
+            Image.asset(
+                "assets/images/login.png",
               height: MediaQuery.of(context).size.height * 0.4,
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
