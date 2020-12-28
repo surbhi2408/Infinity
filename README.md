@@ -15,4 +15,5 @@
   <li> Activity Feed showing recent likes / comments of your posts + new followers. </li>
   <li> Custom photo feed based on who you follow (using firebase cloud functions). </li>
   <li> User can share posts to other social media. </li>
+  <li> User can chat with their friends by sending texts, stickers, gifs, images etc. </li>
 </ol>
