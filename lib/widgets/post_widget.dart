@@ -7,6 +7,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:social_network_app/models/user.dart';
 import 'package:social_network_app/screens/comments_page.dart';
+import 'package:social_network_app/screens/edit_post_screen.dart';
 import 'package:social_network_app/screens/login_screen.dart';
 import 'package:social_network_app/screens/profile_page.dart';
 import 'package:social_network_app/widgets/progress_widget.dart';
@@ -208,8 +209,18 @@ class _PostState extends State<Post> {
                   color: Colors.white,
                 ),
               ),
-              onTap: () => print("edit clicked"),
-              //onTap: () => controlPostEdit(context),
+              //onTap: () => print("edit clicked"),
+              onTap: (){
+                // Navigator.push(context, MaterialPageRoute(
+                //   builder: (context) => EditPostScreen(
+                //     postUrl: url,
+                //     description: description,
+                //     location: location,
+                //   ),
+                // ));
+                Navigator.pop(context);
+                controlPostEdit();
+              },
             ),
           ],
         );
@@ -496,6 +507,17 @@ class _PostState extends State<Post> {
       linkUrl: url,
       chooserTitle: 'Where you want to Share',
     );
+  }
+
+  controlPostEdit(){
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => EditPostScreen(
+        postId: postId,
+        postUrl: url,
+        description: description,
+        location: location,
+      ),
+    ));
   }
 
   displayComments(BuildContext context, {String postId, String ownerId, String url}){
