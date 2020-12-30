@@ -6,7 +6,7 @@
   <li> User can edit their profile by adding bio, username and uploading profile picture. </li>
   <li> User can post articles using camera or gallery which contain images, description, location etc. </li>
   <li> GeoLocation is used inorder to get current location of user. </li>
-  <li> User can delete their post but cannot delete other user's post. </li>
+  <li> User can delete and edit their post but cannot delete or edit other user's post. </li>
   <li> User can like or dislike other's post. </li>
   <li> User can comment on posts of other's. </li>
   <li> User can follow each other to see their posts in their feed. </li>
