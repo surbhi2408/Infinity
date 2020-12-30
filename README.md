@@ -1,4 +1,4 @@
-# socioApp
+# Infinity
 
 ## Features
 <ol type = "1">
