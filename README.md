@@ -46,9 +46,10 @@
 
 ## ScreenShots
 
-Login Page               |  Search Users Page           | Upload Page               |  Upload Options
+Login Page              |  Search Page               | Upload Page               |  Upload Options
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![](https://github.com/surbhi2408/Infinity/blob/main/screenshots/login_screen.png?raw=true)|![]
 (https://github.com/surbhi2408/Infinity/blob/main/screenshots/search_screen.png?raw=true)|![]
 (https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_screen.png?raw=true)|![]
 (https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_options.png?raw=true)|
+
