@@ -46,10 +46,8 @@
 
 ## ScreenShots
 
-Login Page              |  Search Page               | Upload Page               |  Upload Options
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![](https://github.com/surbhi2408/Infinity/blob/main/screenshots/login_screen.png?raw=true)|![]
-(https://github.com/surbhi2408/Infinity/blob/main/screenshots/search_screen.png?raw=true)|![]
-(https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_screen.png?raw=true)|![]
-(https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_options.png?raw=true)|
-
+|   |   |   |
+|---|---|---|
+|Login ![Login](https://github.com/surbhi2408/Infinity/blob/main/screenshots/login_screen.png?raw=true)|Search Users ![Search Users](https://github.com/surbhi2408/Infinity/blob/main/screenshots/search_screen.png?raw=true)|Upload Screen ![Upload Screen](https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_screen.png?raw=true)|
+|Upload Options ![Upload Options](https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_options.png?raw=true)|Camera Click ![Camera Click](https://github.com/surbhi2408/Infinity/blob/main/screenshots/camera_click.png?raw=true)|Notifications ![Notifications](https://github.com/surbhi2408/Infinity/blob/main/screenshots/notifications.png?raw=true)|
+|Post options for creator ![Post options for creator](https://github.com/surbhi2408/Infinity/blob/main/screenshots/post_option.png?raw=true)|Chat Search ![Chat Search](https://github.com/surbhi2408/Infinity/blob/main/screenshots/chat_search.png?raw=true)|Create post ![Create post](https://github.com/surbhi2408/Infinity/blob/main/screenshots/upload_newPost.png?raw=true)|
