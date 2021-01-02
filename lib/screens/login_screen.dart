@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              "SocioApp",
+              "Infinity",
               style: TextStyle(
                 fontSize: 45.0,
                 color: Colors.white,
